@@ -1,0 +1,16 @@
+# Swift / SwiftPM
+.build/
+apps/macos/build/
+*.dSYM/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+.vercel/
+
+# Tooling
+.playwright-mcp/
+.DS_Store
+*.log
+.env*.local

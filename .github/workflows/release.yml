@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Run tests
+        working-directory: apps/macos
+        run: make test
+
+      # Ad-hoc signed. Runners have no Developer ID, and a real one is added via secrets below.
+      - name: Build universal app
+        working-directory: apps/macos
+        run: make app UNIVERSAL=1 SIGN_ID=-
+
+      # Only runs once a Developer ID exists. Until then the release ships unsigned, which the
+      # website documents. Adding these three secrets is the whole switch.
+      - name: Sign and notarize
+        if: ${{ secrets.APPLE_ID != '' }}
+        working-directory: apps/macos
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+          APPLE_CERT_P12: ${{ secrets.APPLE_CERT_P12 }}
+          APPLE_CERT_PASSWORD: ${{ secrets.APPLE_CERT_PASSWORD }}
+        run: |
+          set -euo pipefail
+          echo "$APPLE_CERT_P12" | base64 --decode > /tmp/cert.p12
+          security create-keychain -p actions build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p actions build.keychain
+          security import /tmp/cert.p12 -k build.keychain -P "$APPLE_CERT_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k actions build.keychain
+          IDENTITY=$(security find-identity -v -p codesigning | awk '$2 ~ /^[0-9A-F]{40}$/ {print $2; exit}')
+          codesign --force --options runtime --timestamp \
+            --sign "$IDENTITY" --identifier com.aditya.airewriteanywhere \
+            build/AIRewriteAnywhere.app
+          ditto -c -k --keepParent build/AIRewriteAnywhere.app /tmp/notarize.zip
+          xcrun notarytool submit /tmp/notarize.zip \
+            --apple-id "$APPLE_ID" --team-id "$APPLE_TEAM_ID" --password "$APPLE_APP_PASSWORD" --wait
+          xcrun stapler staple build/AIRewriteAnywhere.app
+
+      - name: Package
+        working-directory: apps/macos
+        run: ditto -c -k --keepParent build/AIRewriteAnywhere.app AIRewriteAnywhere.zip
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: apps/macos/AIRewriteAnywhere.zip
+          generate_release_notes: true
+          body: |
+            Download `AIRewriteAnywhere.zip`, unzip it, and move the app to Applications.
+
+            **First launch:** this build is not notarised, so macOS will say it cannot check the
+            app. Right-click it and choose **Open**, or go to System Settings → Privacy & Security
+            → **Open Anyway**. You only do this once.
+
+            Then grant Accessibility permission, relaunch, and add your OpenAI API key in Settings.
