@@ -37,6 +37,10 @@ public struct URLSessionTransport: HTTPTransport {
 public struct OpenAIClient: RewriteService {
     public static let defaultEndpoint = URL(string: "https://api.openai.com/v1/responses")!
 
+    /// Selections above this are refused before any request is made. Guards against accidentally
+    /// sending a whole document (⌘A then the shortcut) and against runaway cost.
+    public static let maxInputCharacters = 8_000
+
     private let endpoint: URL
     private let transport: HTTPTransport
     private let apiKeyProvider: @Sendable () -> String?
@@ -57,6 +61,9 @@ public struct OpenAIClient: RewriteService {
     public func makeRequest(text: String, mode: RewriteMode) throws -> URLRequest {
         guard let key = apiKeyProvider()?.trimmingCharacters(in: .whitespacesAndNewlines), !key.isEmpty else {
             throw RewriteError.missingAPIKey
+        }
+        guard text.count <= Self.maxInputCharacters else {
+            throw RewriteError.selectionTooLong(count: text.count, limit: Self.maxInputCharacters)
         }
 
         var request = URLRequest(url: endpoint)
@@ -95,7 +102,59 @@ public struct OpenAIClient: RewriteService {
             throw RewriteError.api(status: http.statusCode, message: Self.errorMessage(from: data, status: http.statusCode))
         }
 
-        return try Self.parseOutputText(from: data)
+        let output = try Self.parseOutputText(from: data)
+
+        // The model is told to return only rewritten text, but it can still answer
+        // conversationally — usually when the selection is rude or reads like a question aimed
+        // at it. Pasting that would replace the user's writing with a chat message.
+        guard !Self.looksLikeConversationalReply(output: output, input: text) else {
+            throw RewriteError.modelDeclined
+        }
+        return output
+    }
+
+    // MARK: - Output guard
+
+    /// Phrases that only ever appear when the model is talking *as an assistant*.
+    private static let assistantTells = [
+        "as an ai", "i'm an ai", "i am an ai", "language model",
+        "i can't assist", "i cannot assist",
+        "i can't help with", "i cannot help with",
+        "i'm here to help", "i am here to help",
+    ]
+
+    /// Phrases that are suspicious but appear in ordinary prose too — "I'm unable to join the
+    /// call" is a perfectly good rewrite. These only count alongside a task word.
+    private static let hedgeTells = [
+        "i'm unable", "i am unable", "i won't be able", "i will not be able",
+        "sorry, but i", "i'm sorry, but", "i apologize, but", "i apologise, but",
+        "please share", "please provide", "let me know what", "if you have any text",
+    ]
+
+    /// Vocabulary that means the sentence is about the rewriting job rather than about the
+    /// user's own life. "I can't come tomorrow" is content; "I can't rewrite that" is a refusal.
+    private static let taskWords = [
+        "rewrite", "rewritten", "rewriting", "assist", "request", "content",
+        "the text", "your text", "respectful", "appropriate",
+    ]
+
+    /// True when the model answered the user instead of transforming their text.
+    ///
+    /// An earlier version compared output and input lengths. That was wrong: a refusal is often
+    /// about the same length as what it refuses, so real refusals slipped through. What actually
+    /// separates the two is vocabulary — a refusal talks about the *task*, a rewrite talks about
+    /// whatever the user was writing about.
+    ///
+    /// Tuned to over-block rather than under-block. A false positive shows an alert and pastes
+    /// nothing, so the user retries; a false negative overwrites their writing with a chat reply.
+    public static func looksLikeConversationalReply(output: String, input: String) -> Bool {
+        let lowered = output.lowercased()
+
+        if assistantTells.contains(where: { lowered.contains($0) }) { return true }
+
+        let hedged = hedgeTells.contains(where: { lowered.contains($0) })
+        let aboutTheTask = taskWords.contains(where: { lowered.contains($0) })
+        return hedged && aboutTheTask
     }
 
     // MARK: - Parsing

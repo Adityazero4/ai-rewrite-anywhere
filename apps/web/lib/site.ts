@@ -68,6 +68,14 @@ export const FAQ = [
     a: "It translates into English. If you write in Hindi, Hinglish, Spanish or anything else, the rewrite comes back as English while keeping your meaning and tone.",
   },
   {
+    q: "What if the model replies instead of rewriting?",
+    a: "Nothing is replaced and you get a small alert. The app checks whether the response reads like a chat reply rather than a rewrite, and refuses to paste it — your selection stays exactly as you wrote it. The prompt also tells the model to treat your selection as text to transform, never as instructions to follow, so text that looks like a command is rewritten rather than obeyed.",
+  },
+  {
+    q: "Is there a limit on how much text I can rewrite at once?",
+    a: "8,000 characters per rewrite. Anything larger is refused before a request is sent, which stops an accidental select-all from sending a whole document and running up cost.",
+  },
+  {
     q: "What are the system requirements?",
     a: "macOS 13 Ventura or later, on Apple Silicon or Intel.",
   },

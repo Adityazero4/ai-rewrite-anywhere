@@ -10,6 +10,8 @@ public enum RewriteError: LocalizedError, Equatable {
     case network(String)
     case api(status: Int, message: String)
     case emptyResponse
+    case modelDeclined
+    case selectionTooLong(count: Int, limit: Int)
     case pasteFailed
     case replacementFailed
 
@@ -31,6 +33,10 @@ public enum RewriteError: LocalizedError, Equatable {
             return "OpenAI request failed (HTTP \(status)): \(message)"
         case .emptyResponse:
             return "The model returned an empty response. Nothing was replaced."
+        case .modelDeclined:
+            return "The model replied instead of rewriting your text, so nothing was replaced. Your selection is untouched. Try a different mode, or rephrase the text."
+        case .selectionTooLong(let count, let limit):
+            return "That selection is \(count) characters — over the \(limit) character limit. Select a smaller passage."
         case .pasteFailed:
             return "Couldn't send the paste keystroke to the frontmost app. Your clipboard has been restored."
         case .replacementFailed:

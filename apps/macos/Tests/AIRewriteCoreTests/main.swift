@@ -8,5 +8,6 @@ runAppSettingsTests()
 runKeychainTests()
 await runClipboardTests()
 await runRewriteCoordinatorTests()
+await runGuardrailTests()
 
 exit(t.summarize())
