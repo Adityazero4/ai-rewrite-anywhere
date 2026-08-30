@@ -207,7 +207,7 @@ testable. `HTTPTransport`, `RewriteService`, `SelectionReading`, `SelectionWriti
 
 Every failure produces one plain-English alert and changes nothing else:
 
-| Situation | Behaviour |
+| Situation | Behavior |
 |---|---|
 | No Accessibility permission | Alert with an **Open Settings…** button |
 | No API key set | Alert with an **Open Settings…** button |

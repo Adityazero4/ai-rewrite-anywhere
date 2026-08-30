@@ -72,7 +72,7 @@ jobs:
           body: |
             Download `AIRewriteAnywhere.zip`, unzip it, and move the app to Applications.
 
-            **First launch:** this build is not notarised, so macOS will say it cannot check the
+            **First launch:** this build is not notarized, so macOS will say it cannot check the
             app. Right-click it and choose **Open**, or go to System Settings → Privacy & Security
             → **Open Anyway**. You only do this once.
 

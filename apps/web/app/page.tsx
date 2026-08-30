@@ -228,7 +228,7 @@ function Install() {
     [
       "Open it the first time",
       <>
-        This build is not notarised yet, so macOS will say it cannot check the app. Right-click it
+        This build is not notarized yet, so macOS will say it cannot check the app. Right-click it
         and choose <em>Open</em>, or go to System Settings → Privacy &amp; Security →{" "}
         <em>Open Anyway</em>. Once only.
       </>,

@@ -45,7 +45,7 @@ export const FAQ = [
   },
   {
     q: "Is it free?",
-    a: "The app is free and open source under the MIT licence. You bring your own OpenAI API key and pay OpenAI directly for what you use, which for everyday rewriting is a few cents a month on the default model.",
+    a: "The app is free and open source under the MIT license. You bring your own OpenAI API key and pay OpenAI directly for what you use, which for everyday rewriting is a few cents a month on the default model.",
   },
   {
     q: "Where does my text go?",
@@ -53,7 +53,7 @@ export const FAQ = [
   },
   {
     q: "Why does macOS say the app cannot be checked for malware?",
-    a: "Because this build is not yet notarised by Apple, which needs a paid Apple Developer account. The app is open source, so you can read every line or build it yourself. To open it the first time, right-click the app and choose Open, or go to System Settings, then Privacy and Security, and click Open Anyway. You only do this once.",
+    a: "Because this build is not yet notarized by Apple, which needs a paid Apple Developer account. The app is open source, so you can read every line or build it yourself. To open it the first time, right-click the app and choose Open, or go to System Settings, then Privacy and Security, and click Open Anyway. You only do this once.",
   },
   {
     q: "Why does it need Accessibility permission?",
