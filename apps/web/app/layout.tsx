@@ -1,11 +1,33 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans, Instrument_Serif } from "next/font/google";
 import { ConsoleMark } from "@/components/ConsoleMark";
 import { FAQ, NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-const sans = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "swap" });
-const mono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], display: "swap" });
+/*
+  Three roles, because the page has three voices. Instrument Serif is the prose being edited —
+  high-contrast, editorial, the voice of the manuscript. IBM Plex Sans carries the explanation
+  around it. IBM Plex Mono is the editor's hand: folios, marks, keycaps.
+*/
+const editorial = Instrument_Serif({
+  variable: "--font-editorial",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  display: "swap",
+});
+const body = IBM_Plex_Sans({
+  variable: "--font-body",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
+});
+const marks = IBM_Plex_Mono({
+  variable: "--font-marks",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -96,7 +118,7 @@ const structuredDataJSON = JSON.stringify(structuredData).replace(/</g, "\\u003c
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${sans.variable} ${mono.variable} font-sans antialiased`}>
+      <body className={`${editorial.variable} ${body.variable} ${marks.variable} font-sans antialiased`}>
         {children}
         <ConsoleMark />
         <script

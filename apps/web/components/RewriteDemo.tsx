@@ -1,70 +1,39 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { EXAMPLES, draftOf, finalOf } from "@/lib/site";
 
 /*
-  The hero's thesis. This app has no interface worth screenshotting — the whole product is a
-  keystroke that changes text where it already sits. So the demo puts the text back where it
-  lives: inside a window, in a real app, mid-conversation.
+  The signature. This app is a copy-editor, so the hero is a proof being marked up: the draft
+  comes in, the red pencil strikes what goes, the blue pencil writes what replaces it, and then
+  the marks resolve into clean copy. That is literally what pressing the shortcut does.
 
-  The typography carries the transformation. The draft is monospace — raw, typed, unfinished.
-  The result is the proportional face — composed. The face change *is* the rewrite.
+  Three states, not a continuous animation — a proof has stages, and stages are legible.
 */
 
-const EXAMPLES = [
-  {
-    app: "Slack",
-    context: "#eng-platform",
-    before:
-      "hey so the deploy is failing again i think its the env var thing we talked about, can u check when ur free? not urgent but blocking me",
-    after:
-      "Hey — the deploy is failing again. I think it's the env var issue we discussed. Could you take a look when you get a chance? Not urgent, but it's blocking me.",
-  },
-  {
-    app: "Linear",
-    context: "ENG-412 · Description",
-    before:
-      "the button dont work on mobile, when u click it nothing happens at all. tested on iphone 14 safari and also chrome android same thing",
-    after:
-      "The button does not respond on mobile — tapping it produces no visible action. Reproduced on iPhone 14 (Safari) and Android (Chrome).",
-  },
-  {
-    app: "Gmail",
-    context: "Re: Q3 roadmap",
-    before:
-      "thanks for sending this over. i had a look and mostly lgtm, just few things i wasnt sure about which we can maybe discuss tomorrow?",
-    after:
-      "Thanks for sending this over. I've read through it and it mostly looks good. There are a few points I'm unsure about — could we discuss them tomorrow?",
-  },
-] as const;
+type Stage = "draft" | "marked" | "clean";
 
-type Phase = "idle" | "selecting" | "pressed" | "working" | "done";
-
-const TIMELINE: Record<Phase, { next: Phase; ms: number }> = {
-  idle: { next: "selecting", ms: 900 },
-  selecting: { next: "pressed", ms: 700 },
-  pressed: { next: "working", ms: 300 },
-  working: { next: "done", ms: 900 },
-  done: { next: "idle", ms: 3600 },
+const NEXT: Record<Stage, { next: Stage; ms: number }> = {
+  draft: { next: "marked", ms: 1400 },
+  marked: { next: "clean", ms: 2600 },
+  clean: { next: "draft", ms: 3000 },
 };
 
-const CAPTION: Record<Phase, string> = {
-  idle: "A message you actually typed",
-  selecting: "Select it",
-  pressed: "Press the shortcut",
-  working: "Rewriting",
-  done: "Replaced, in place",
+const LABEL: Record<Stage, string> = {
+  draft: "As typed",
+  marked: "Marked up",
+  clean: "Set clean",
 };
 
 export function RewriteDemo() {
   const [index, setIndex] = useState(0);
-  const [phase, setPhase] = useState<Phase>("idle");
+  const [stage, setStage] = useState<Stage>("draft");
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
-    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (query.matches) {
-      setPhase("done"); // the animation is the point; without motion, show the outcome
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setStage("marked"); // the marked-up state is the one that explains the product
       return;
     }
     setAnimate(true);
@@ -72,125 +41,109 @@ export function RewriteDemo() {
 
   useEffect(() => {
     if (!animate) return;
-    const { next, ms } = TIMELINE[phase];
+    const { next, ms } = NEXT[stage];
     const timer = setTimeout(() => {
-      setPhase(next);
-      if (next === "idle") setIndex((i) => (i + 1) % EXAMPLES.length); // rotate through the apps
+      setStage(next);
+      if (next === "draft") setIndex((i) => (i + 1) % EXAMPLES.length);
     }, ms);
     return () => clearTimeout(timer);
-  }, [phase, animate]);
+  }, [stage, animate]);
 
   const example = EXAMPLES[index];
-  const highlighted = phase !== "idle";
-  const rewritten = phase === "done";
-  const keysLit = phase === "pressed" || phase === "working";
-
-  const selectExample = (next: number) => {
-    setIndex(next);
-    setPhase("idle");
-  };
 
   return (
     <figure className="m-0">
-      <div className="window">
-        {/* macOS window chrome — the text lives inside an app, not on a marketing page. */}
-        <div className="window-bar">
-          <span className="flex gap-[6px]" aria-hidden="true">
-            <i className="light" style={{ background: "#ff5f57" }} />
-            <i className="light" style={{ background: "#febc2e" }} />
-            <i className="light" style={{ background: "#28c840" }} />
-          </span>
-
-          <div
-            className="flex items-center gap-1"
-            role="tablist"
-            aria-label="Example applications"
+      <div className="sheet">
+        {/* The proof's header: which manuscript this is, and its state. */}
+        <div className="flex items-center justify-between gap-4 border-b border-rule px-5 py-2.5 sm:px-7">
+          {/*
+            Radix Tabs rather than hand-rolled buttons: it gives roving tabindex and arrow-key
+            navigation for free, which a plain role="tablist" does not. Styled from scratch —
+            the library is here for behaviour, never for its look.
+          */}
+          <Tabs
+            value={String(index)}
+            onValueChange={(v) => {
+              setIndex(Number(v));
+              setStage("draft");
+            }}
           >
-            {EXAMPLES.map((item, i) => (
-              <button
-                key={item.app}
-                role="tab"
-                aria-selected={i === index}
-                onClick={() => selectExample(i)}
-                className={`rounded-md px-2.5 py-1 font-mono text-[0.7rem] transition-colors ${
-                  i === index ? "bg-[var(--chip)] text-ink" : "text-muted hover:text-ink"
-                }`}
-              >
-                {item.app}
-              </button>
-            ))}
-          </div>
-
-          <span className="w-[52px]" aria-hidden="true" />
+            <TabsList className="h-auto gap-3 bg-transparent p-0">
+              {EXAMPLES.map((item, i) => (
+                <TabsTrigger
+                  key={item.app}
+                  value={String(i)}
+                  className="rounded-none border-0 bg-transparent px-0 py-0 font-mono text-[0.7rem] uppercase tracking-[0.12em] text-muted shadow-none transition-colors hover:text-ink data-[state=active]:bg-transparent data-[state=active]:text-ink data-[state=active]:shadow-none data-[state=active]:underline data-[state=active]:decoration-blue data-[state=active]:decoration-2 data-[state=active]:underline-offset-[6px]"
+                >
+                  {item.app}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+          <span className="folio">{example.where}</span>
         </div>
 
-        <div className="px-5 pb-5 pt-4 sm:px-7 sm:pb-6">
-          <p className="eyebrow mb-3">{example.context}</p>
-
-          {/* Both drafts share one grid cell so the window never jumps as they swap. */}
-          {/*
-            The two drafts share a cell, so they must never be visible at once — a simultaneous
-            crossfade superimposes them into an unreadable smear. Whichever is arriving waits for
-            the other to finish leaving.
-          */}
-          <div className="grid min-h-[4.75rem] text-[0.95rem] leading-relaxed sm:text-base">
-            <p
-              className={`col-start-1 row-start-1 font-mono transition-opacity ${
-                rewritten ? "pointer-events-none opacity-0" : "opacity-100"
-              }`}
-              style={{ transitionDuration: "220ms", transitionDelay: rewritten ? "0ms" : "240ms" }}
+        <div className="grid gap-0 sm:grid-cols-[3.25rem_1fr]">
+          {/* Editor's margin — the mark that says what was done to this line. */}
+          <div className="hidden items-start justify-center border-r border-rule pt-6 sm:flex">
+            <span
+              className="font-mono text-sm transition-colors duration-300"
+              style={{ color: stage === "draft" ? "var(--muted)" : "var(--blue)" }}
+              aria-hidden="true"
             >
-              <span
-                className="box-decoration-clone bg-no-repeat transition-[background-size] duration-700 ease-out"
-                style={{
-                  backgroundImage: "linear-gradient(var(--sel-wash), var(--sel-wash))",
-                  backgroundSize: highlighted ? "100% 100%" : "0% 100%",
-                }}
-              >
-                {example.before}
-              </span>
-            </p>
-
-            <p
-              className={`col-start-1 row-start-1 transition-opacity ${
-                rewritten ? "opacity-100" : "pointer-events-none opacity-0"
-              }`}
-              style={{ transitionDuration: "220ms", transitionDelay: rewritten ? "240ms" : "0ms" }}
-            >
-              {example.after}
-            </p>
+              {stage === "draft" ? "¶" : stage === "marked" ? "✎" : "✓"}
+            </span>
           </div>
 
-          <div className="rule mt-5 flex items-center justify-between gap-4 pt-4">
-            <span className="eyebrow" aria-live="polite">
-              {CAPTION[phase]}
-            </span>
-            <Keys lit={keysLit} />
+          <div className="px-5 py-6 sm:px-7">
+            <p className="font-serif text-[1.15rem] leading-[1.75] sm:text-[1.3rem]">
+              {stage === "draft" && draftOf(example.marks)}
+
+              {stage === "marked" &&
+                example.marks.map((mark, i) =>
+                  "keep" in mark ? (
+                    <span key={i}>{mark.keep}</span>
+                  ) : (
+                    <span key={i}>
+                      <span className="cut">{mark.cut}</span>
+                      <span className="add">{mark.add}</span>
+                    </span>
+                  ),
+                )}
+
+              {stage === "clean" && finalOf(example.marks)}
+            </p>
+
+            <div className="mt-6 flex items-center justify-between gap-4 border-t border-rule pt-4">
+              <span className="folio" aria-live="polite">
+                {LABEL[stage]}
+              </span>
+              <Keys pressed={stage === "marked"} />
+            </div>
           </div>
         </div>
       </div>
 
       <figcaption className="sr-only">
-        A {example.app} message reading &ldquo;{example.before}&rdquo; is selected, the Command
-        Shift R shortcut is pressed, and it is replaced in place with &ldquo;{example.after}&rdquo;
+        A {example.app} message reading &ldquo;{draftOf(example.marks)}&rdquo; is marked up and
+        reset as &ldquo;{finalOf(example.marks)}&rdquo;
       </figcaption>
     </figure>
   );
 }
 
-function Keys({ lit }: { lit: boolean }) {
+function Keys({ pressed }: { pressed: boolean }) {
   return (
     <span className="flex shrink-0 items-center gap-1" aria-hidden="true">
       {["⌘", "⇧", "R"].map((key) => (
         <kbd
           key={key}
-          className="grid h-7 min-w-7 place-items-center rounded-md border px-1.5 font-mono text-xs transition-all duration-150"
+          className="grid h-6 min-w-6 place-items-center rounded-[3px] border px-1.5 font-mono text-[0.7rem] transition-all duration-150"
           style={{
-            borderColor: lit ? "var(--sel)" : "var(--line)",
-            background: lit ? "var(--sel-wash)" : "transparent",
-            color: lit ? "var(--sel)" : "var(--muted)",
-            transform: lit ? "translateY(1px)" : "none",
-            boxShadow: lit ? "0 0 0 4px var(--sel-glow)" : "none",
+            borderColor: pressed ? "var(--blue)" : "var(--rule)",
+            background: pressed ? "var(--blue-wash)" : "transparent",
+            color: pressed ? "var(--blue)" : "var(--muted)",
+            transform: pressed ? "translateY(1px)" : "none",
           }}
         >
           {key}

@@ -80,3 +80,56 @@ export const FAQ = [
     a: "macOS 13 Ventura or later, on Apple Silicon or Intel.",
   },
 ] as const;
+
+/**
+ * Each example is authored as proof-marks: what the editor strikes, what they insert, and what
+ * they leave alone. Hand-written rather than diffed at runtime — chunky marks read better than
+ * a character-level diff, and this way the marks fall where a human editor would put them.
+ */
+export type Mark =
+  | { keep: string }
+  | { cut: string; add: string };
+
+export const EXAMPLES = [
+  {
+    app: "Slack",
+    where: "#eng-platform",
+    marks: [
+      { cut: "hey so ", add: "Hey — " },
+      { keep: "the deploy is failing again" },
+      { cut: " i think its", add: ". I think it's" },
+      { keep: " the env var " },
+      { cut: "thing we talked about,", add: "issue we discussed." },
+      { cut: " can u check when ur free?", add: " Could you take a look when you get a chance?" },
+      { keep: " Not urgent" },
+      { cut: " but blocking me", add: ", but it's blocking me." },
+    ],
+  },
+  {
+    app: "Linear",
+    where: "ENG-412 · Description",
+    marks: [
+      { cut: "the button dont work on mobile,", add: "The button does not respond on mobile —" },
+      { cut: " when u click it nothing happens at all.", add: " tapping it produces no visible action." },
+      { cut: " tested on", add: " Reproduced on" },
+      { keep: " iPhone 14" },
+      { cut: " safari and also chrome android same thing", add: " (Safari) and Android (Chrome)." },
+    ],
+  },
+  {
+    app: "Gmail",
+    where: "Re: Q3 roadmap",
+    marks: [
+      { keep: "Thanks for sending this over." },
+      { cut: " i had a look and mostly lgtm,", add: " I've read through it and it mostly looks good." },
+      { cut: " just few things i wasnt sure about", add: " There are a few points I'm unsure about" },
+      { cut: " which we can maybe discuss tomorrow?", add: " — could we discuss them tomorrow?" },
+    ],
+  },
+] as const;
+
+export const draftOf = (marks: readonly Mark[]) =>
+  marks.map((m) => ("keep" in m ? m.keep : m.cut)).join("");
+
+export const finalOf = (marks: readonly Mark[]) =>
+  marks.map((m) => ("keep" in m ? m.keep : m.add)).join("");

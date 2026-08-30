@@ -15,14 +15,18 @@ import Foundation
 
 // MARK: - Palette
 
-private let ink = NSColor(srgbRed: 0.055, green: 0.065, blue: 0.09, alpha: 1)      // near-black tile
-private let accent = NSColor(srgbRed: 0.40, green: 0.78, blue: 1.0, alpha: 1)      // sky
-private let accentDeep = NSColor(srgbRed: 0.30, green: 0.55, blue: 1.0, alpha: 1)  // deeper sky
-private let paper = NSColor(srgbRed: 0.99, green: 0.99, blue: 1.0, alpha: 1)
+private let ink = NSColor(srgbRed: 0.078, green: 0.078, blue: 0.102, alpha: 1)   // manuscript ink
+private let accent = NSColor(srgbRed: 0.122, green: 0.310, blue: 0.847, alpha: 1) // blue pencil
+private let accentDeep = NSColor(srgbRed: 0.784, green: 0.204, blue: 0.169, alpha: 1) // red pencil
+private let paper = NSColor(srgbRed: 0.988, green: 0.988, blue: 0.980, alpha: 1)  // proof paper
 
 // MARK: - Drawing
 
 /// Everything is expressed in a 1024×1024 design space and scaled, so one routine serves all sizes.
+///
+/// The mark is a proof correction: a serif letterform struck by the red pencil, with the blue
+/// pencil's correction stroke beneath it. No sparkles — a sparkle is the one thing every AI
+/// product's icon has, and this app is a copy-editor, not a magic wand.
 private func drawMark(in size: CGFloat, tile: Bool) {
     let s = size / 1024.0
     func p(_ value: CGFloat) -> CGFloat { value * s }
@@ -30,86 +34,56 @@ private func drawMark(in size: CGFloat, tile: Bool) {
     NSGraphicsContext.current?.imageInterpolation = .high
 
     if tile {
-        // macOS icons sit in a rounded square with generous padding around the artwork.
-        let inset = p(96)
+        let inset = p(72)
         let rect = NSRect(x: inset, y: inset, width: size - inset * 2, height: size - inset * 2)
-        let tilePath = NSBezierPath(roundedRect: rect, xRadius: p(200), yRadius: p(200))
+        let tilePath = NSBezierPath(roundedRect: rect, xRadius: p(196), yRadius: p(196))
 
-        ink.setFill()
+        paper.setFill()
         tilePath.fill()
 
-        // A very soft top-light so the tile doesn't read as flat black.
-        NSGraphicsContext.saveGraphicsState()
-        tilePath.addClip()
-        let sheen = NSGradient(colors: [NSColor.white.withAlphaComponent(0.10),
-                                        NSColor.white.withAlphaComponent(0.0)])
-        sheen?.draw(in: rect, angle: 90)
-        NSGraphicsContext.restoreGraphicsState()
+        // A hairline keeps the pale tile from dissolving into a light menu bar.
+        NSColor.black.withAlphaComponent(0.12).setStroke()
+        tilePath.lineWidth = p(6)
+        tilePath.stroke()
     }
 
-    // MARK: Caret — the "this is text" cue.
-    let caretWidth = p(70)
-    let caretHeight = p(430)
-    let caretX = size / 2 - p(205)
-    let caretY = size / 2 - caretHeight / 2 - p(6)
+    // MARK: The letterform. Drawn as real type so it carries the serif of the website.
+    let glyph: NSString = "A"
+    let pointSize = p(660)
+    let font = NSFont(name: "Times New Roman", size: pointSize)
+        ?? NSFont(name: "Georgia", size: pointSize)
+        ?? NSFont.systemFont(ofSize: pointSize)
 
-    let caret = NSBezierPath(roundedRect: NSRect(x: caretX, y: caretY, width: caretWidth, height: caretHeight),
-                             xRadius: caretWidth / 2, yRadius: caretWidth / 2)
-    (tile ? paper : ink).setFill()
-    caret.fill()
+    let attributes: [NSAttributedString.Key: Any] = [
+        .font: font,
+        .foregroundColor: tile ? ink : ink,
+    ]
+    let measured = glyph.size(withAttributes: attributes)
+    glyph.draw(at: NSPoint(x: size / 2 - measured.width / 2,
+                           y: size / 2 - measured.height / 2 + p(62)),
+               withAttributes: attributes)
 
-    // Serif-style caret arms, top and bottom, so it reads as a text cursor rather than a bar.
-    let armWidth = p(210)
-    let armHeight = p(66)
-    for armY in [caretY - armHeight / 2 + p(8), caretY + caretHeight - armHeight / 2 - p(8)] {
-        let arm = NSBezierPath(roundedRect: NSRect(x: caretX + caretWidth / 2 - armWidth / 2,
-                                                   y: armY,
-                                                   width: armWidth, height: armHeight),
-                               xRadius: armHeight / 2, yRadius: armHeight / 2)
-        (tile ? paper : ink).setFill()
-        arm.fill()
-    }
+    // MARK: Red pencil — the strike through what is being corrected.
+    let strike = NSBezierPath()
+    strike.move(to: CGPoint(x: p(252), y: size / 2 + p(46)))
+    strike.curve(to: CGPoint(x: size - p(252), y: size / 2 + p(88)),
+                 controlPoint1: CGPoint(x: size * 0.42, y: size / 2 + p(96)),
+                 controlPoint2: CGPoint(x: size * 0.62, y: size / 2 + p(30)))
+    accentDeep.setStroke()
+    strike.lineWidth = p(34)
+    strike.lineCapStyle = .round
+    strike.stroke()
 
-    // MARK: Sparkle — the "AI" cue. A four-point star built from concave curves.
-    func sparkle(centre: CGPoint, radius: CGFloat, waist: CGFloat) -> NSBezierPath {
-        let path = NSBezierPath()
-        let w = radius * waist
-        path.move(to: CGPoint(x: centre.x, y: centre.y + radius))
-        path.curve(to: CGPoint(x: centre.x + radius, y: centre.y),
-                   controlPoint1: CGPoint(x: centre.x + w, y: centre.y + w),
-                   controlPoint2: CGPoint(x: centre.x + w, y: centre.y + w))
-        path.curve(to: CGPoint(x: centre.x, y: centre.y - radius),
-                   controlPoint1: CGPoint(x: centre.x + w, y: centre.y - w),
-                   controlPoint2: CGPoint(x: centre.x + w, y: centre.y - w))
-        path.curve(to: CGPoint(x: centre.x - radius, y: centre.y),
-                   controlPoint1: CGPoint(x: centre.x - w, y: centre.y - w),
-                   controlPoint2: CGPoint(x: centre.x - w, y: centre.y - w))
-        path.curve(to: CGPoint(x: centre.x, y: centre.y + radius),
-                   controlPoint1: CGPoint(x: centre.x - w, y: centre.y + w),
-                   controlPoint2: CGPoint(x: centre.x - w, y: centre.y + w))
-        path.close()
-        return path
-    }
-
-    let bigCentre = CGPoint(x: size / 2 + p(150), y: size / 2 + p(138))
-    let big = sparkle(centre: bigCentre, radius: p(232), waist: 0.30)
-
-    if tile {
-        NSGraphicsContext.saveGraphicsState()
-        big.addClip()
-        let gradient = NSGradient(colors: [accent, accentDeep])
-        gradient?.draw(in: big.bounds, angle: -60)
-        NSGraphicsContext.restoreGraphicsState()
-    } else {
-        accentDeep.setFill()
-        big.fill()
-    }
-
-    // A small companion sparkle gives the mark a little life without adding clutter.
-    let small = sparkle(centre: CGPoint(x: size / 2 + p(288), y: size / 2 - p(200)),
-                        radius: p(90), waist: 0.30)
-    (tile ? accent : accentDeep).setFill()
-    small.fill()
+    // MARK: Blue pencil — the correction stroke that says "this is now right".
+    let correction = NSBezierPath()
+    correction.move(to: CGPoint(x: p(272), y: p(292)))
+    correction.curve(to: CGPoint(x: size - p(272), y: p(314)),
+                     controlPoint1: CGPoint(x: size * 0.40, y: p(258)),
+                     controlPoint2: CGPoint(x: size * 0.64, y: p(344)))
+    accent.setStroke()
+    correction.lineWidth = p(38)
+    correction.lineCapStyle = .round
+    correction.stroke()
 }
 
 // MARK: - Rasterising
@@ -209,18 +183,20 @@ func asciiArt(columns: Int) -> String {
             for dy in 0..<2 {
                 let y = row * 2 + dy
                 guard y < pixels, let colour = rep.colorAt(x: column, y: y) else { continue }
-                let alpha = colour.alphaComponent
-                let luma = (0.2126 * colour.redComponent
-                            + 0.7152 * colour.greenComponent
-                            + 0.0722 * colour.blueComponent) * alpha
-                total += luma
+                // The tile is paper with dark marks on it, so density tracks *darkness*.
+                // Anything outside the rounded tile is transparent and stays blank.
+                guard colour.alphaComponent > 0.5 else { continue }
+                let luma = 0.2126 * colour.redComponent
+                         + 0.7152 * colour.greenComponent
+                         + 0.0722 * colour.blueComponent
+                total += 1.0 - luma
                 samples += 1
             }
-            let luma = samples > 0 ? total / samples : 0
-            // The tile itself is dark but not black; drop it to blank so only the mark prints.
-            let floor = 0.20
-            let normalized = max(0, (luma - floor) / (1 - floor))
-            let index = min(ramp.count - 1, Int(normalized * Double(ramp.count)))
+            let darkness = samples > 0 ? total / samples : 0
+            // Paper is not pure white; lift the floor so the sheet itself stays blank.
+            let floor = 0.12
+            let normalized = max(0, (darkness - floor) / (1 - floor))
+            let index = min(ramp.count - 1, Int(normalized * Double(ramp.count) * 1.35))
             line.append(ramp[index])
         }
         lines.append(line.replacingOccurrences(of: "\\s+$", with: "", options: .regularExpression))
