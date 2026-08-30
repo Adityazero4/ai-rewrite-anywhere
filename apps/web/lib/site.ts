@@ -4,7 +4,7 @@ export const DOWNLOAD = `${GITHUB}/releases/latest/download/AIRewriteAnywhere.zi
 /** Every canonical URL comes from here, so pointing a custom domain at the site is one variable. */
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
-  "https://airewriteanywhere.vercel.app";
+  "https://ai-rewrite-anywhere.vercel.app";
 
 export const NAME = "AIRewriteAnywhere";
 export const TAGLINE =

@@ -13,7 +13,11 @@
   --line: #e4e8ee;
   --sel: #2f6fed;
   --sel-wash: rgba(47, 111, 237, 0.16);
+  --sel-glow: rgba(47, 111, 237, 0.14);
+  --chip: rgba(14, 17, 22, 0.06);
+  --grid: rgba(14, 17, 22, 0.045);
   --shadow: 0 1px 2px rgba(14, 17, 22, 0.04), 0 8px 24px -12px rgba(14, 17, 22, 0.12);
+  --shadow-lg: 0 2px 4px rgba(14, 17, 22, 0.04), 0 24px 60px -24px rgba(14, 17, 22, 0.26);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -25,7 +29,11 @@
     --line: #1d242e;
     --sel: #5c9bff;
     --sel-wash: rgba(92, 155, 255, 0.2);
+    --sel-glow: rgba(92, 155, 255, 0.16);
+    --chip: rgba(232, 237, 243, 0.09);
+    --grid: rgba(232, 237, 243, 0.05);
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -12px rgba(0, 0, 0, 0.6);
+    --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.5), 0 24px 60px -24px rgba(0, 0, 0, 0.9);
   }
 }
 
@@ -90,4 +98,78 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+
+/* ---------------------------------------------------------------- surfaces */
+
+/*
+  Ambient field behind the hero: a faint grid (the ruled paper of a text editor) with a soft
+  selection-blue bloom where the demo sits. Fixed and non-interactive, so it never costs a repaint.
+*/
+.field {
+  /* Absolute, not fixed: the field belongs to the hero and should scroll away with it.
+     Fixed positioning pins the mask to the viewport, so the grid bleeds behind every section. */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 54rem;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(60rem 32rem at 50% -8rem, var(--sel-wash), transparent 70%),
+    linear-gradient(to right, var(--grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+  background-size: 100% 100%, 3.5rem 3.5rem, 3.5rem 3.5rem;
+  mask-image: linear-gradient(to bottom, #000 0, #000 58%, transparent 100%);
+}
+
+/* A real macOS window, because that is where the user's text actually lives. */
+.window {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.window-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0.85rem;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--ink) 3%, var(--surface));
+}
+
+.light {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: block;
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  padding: 1.25rem;
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.card:hover {
+  border-color: color-mix(in srgb, var(--sel) 35%, var(--line));
+}
+
+/* The menu-bar strip: the app's entire visible surface area, shown at actual size. */
+.menubar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--ink) 4%, var(--surface));
+  padding: 0.3rem 0.7rem;
 }
