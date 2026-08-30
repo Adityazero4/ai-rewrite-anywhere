@@ -11,6 +11,9 @@ permissions:
 jobs:
   release:
     runs-on: macos-15
+    # `secrets` cannot be used in an `if:` expression, so surface the one we gate on as env.
+    env:
+      APPLE_ID: ${{ secrets.APPLE_ID }}
     steps:
       - uses: actions/checkout@v5
 
@@ -26,10 +29,9 @@ jobs:
       # Only runs once a Developer ID exists. Until then the release ships unsigned, which the
       # website documents. Adding these three secrets is the whole switch.
       - name: Sign and notarize
-        if: ${{ secrets.APPLE_ID != '' }}
+        if: env.APPLE_ID != ''
         working-directory: apps/macos
         env:
-          APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
           APPLE_CERT_P12: ${{ secrets.APPLE_CERT_P12 }}
