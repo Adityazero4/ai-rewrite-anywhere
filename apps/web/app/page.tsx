@@ -1,6 +1,14 @@
 import { ColophonMark } from "@/components/ColophonMark";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { RewriteDemo } from "@/components/RewriteDemo";
 import { APPS, DOWNLOAD, FAQ, GITHUB, MODES, NAME, NAME_NOTE } from "@/lib/site";
+
+/*
+  Rendered once at build time and served as static HTML — no server work per request, so the
+  first byte is as fast as the CDN can manage. Declared rather than inferred: if a dynamic API
+  ever creeps in, the build fails loudly instead of quietly turning the page into a function.
+*/
+export const dynamic = "force-static";
 
 /*
   Layout: a proof sheet on a desk. One narrow column of prose with a ruled left margin, the way
@@ -53,6 +61,8 @@ function Masthead() {
         <a href={GITHUB} className="text-muted transition-colors hover:text-ink">
           Source
         </a>
+        <span aria-hidden="true" className="text-rule">|</span>
+        <ThemeToggle />
       </nav>
     </header>
   );

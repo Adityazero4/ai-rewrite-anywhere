@@ -20,18 +20,36 @@
   --blue-wash: rgba(31, 79, 216, 0.09);
 }
 
+/*
+  Three theme states. An explicit choice stamps data-theme on <html>; "auto" stamps nothing and
+  falls through to the system preference. The dark tokens are declared twice on purpose — once
+  behind the media query (guarded so an explicit light choice wins) and once for the manual
+  override — because a single block cannot serve both without one overriding the other wrongly.
+*/
 @media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #131318;
-    --board: #0b0b0e;
-    --ink: #ececed;
-    --muted: #8f8f9a;
-    --rule: #26262c;
-    --red: #ff6b60;
-    --blue: #7d9bff;
-    --red-wash: rgba(255, 107, 96, 0.13);
-    --blue-wash: rgba(125, 155, 255, 0.13);
+  :root:not([data-theme="light"]) {
+  --paper: #131318;
+  --board: #0b0b0e;
+  --ink: #ececed;
+  --muted: #8f8f9a;
+  --rule: #26262c;
+  --red: #ff6b60;
+  --blue: #7d9bff;
+  --red-wash: rgba(255, 107, 96, 0.13);
+  --blue-wash: rgba(125, 155, 255, 0.13);
   }
+}
+
+:root[data-theme="dark"] {
+  --paper: #131318;
+  --board: #0b0b0e;
+  --ink: #ececed;
+  --muted: #8f8f9a;
+  --rule: #26262c;
+  --red: #ff6b60;
+  --blue: #7d9bff;
+  --red-wash: rgba(255, 107, 96, 0.13);
+  --blue-wash: rgba(125, 155, 255, 0.13);
 }
 
 @theme inline {
@@ -55,6 +73,7 @@ html {
 body {
   background: var(--board);
   color: var(--ink);
+  transition: background-color 180ms ease, color 180ms ease;
   -webkit-font-smoothing: antialiased;
 }
 

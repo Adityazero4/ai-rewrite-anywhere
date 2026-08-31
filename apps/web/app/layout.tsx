@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans, Instrument_Serif } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ConsoleMark } from "@/components/ConsoleMark";
 import { CATEGORY, FAQ, NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
@@ -115,12 +117,23 @@ const structuredData = {
 */
 const structuredDataJSON = JSON.stringify(structuredData).replace(/</g, "\\u003c");
 
+/*
+  Runs before the browser paints, so a stored dark choice never flashes light first. Kept tiny
+  and synchronous on purpose — anything async would be too late.
+*/
+const applyStoredTheme = `try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: applyStoredTheme }} />
+      </head>
       <body className={`${editorial.variable} ${body.variable} ${marks.variable} font-sans antialiased`}>
         {children}
         <ConsoleMark />
+        <Analytics />
+        <SpeedInsights />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: structuredDataJSON }}
