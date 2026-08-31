@@ -1,7 +1,7 @@
 # PencilMark
 
-A menu-bar app that rewrites whatever text you have selected — in any macOS app — with one
-keystroke. Select text, press `⌘⇧R`, and the selection is replaced in place by an improved
+Pencil Mark is a copy-editor that lives in your menu bar. It marks up whatever text you have
+selected — in any macOS app — with one keystroke. Select text, press `⌘⇧R`, and the selection is replaced in place by an improved
 version. No browser tab, no copy/paste, no per-app integration.
 
 Works in Slack, Chrome, Safari, Gmail, Notion, VS Code, GitHub, Linear, Jira, Notes, TextEdit,

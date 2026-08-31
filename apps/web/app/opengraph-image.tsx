@@ -1,9 +1,9 @@
 import { ImageResponse } from "next/og";
-import { NAME } from "@/lib/site";
+import { CATEGORY, NAME } from "@/lib/site";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = `${NAME} — fix your writing in place`;
+export const alt = `${NAME} — ${CATEGORY}`;
 
 /*
   The card is a proof sheet: the draft struck in red pencil, the correction set in blue beneath.
@@ -38,12 +38,12 @@ export default function OpenGraphImage() {
           }}
         >
           <span>{NAME}</span>
-          <span>Proof · rev. 1.0</span>
+          <span>Copy-editor for macOS</span>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 34 }}>
-          <div style={{ display: "flex", fontSize: 82, lineHeight: 1.05, letterSpacing: -1.5 }}>
-            Fix your writing in place.
+          <div style={{ display: "flex", fontSize: 66, lineHeight: 1.08, letterSpacing: -1.2 }}>
+            A copy-editor for every app you type in.
           </div>
 
           {/* The correction itself, set the way the site sets it. */}
@@ -77,7 +77,7 @@ export default function OpenGraphImage() {
         </div>
 
         <div style={{ display: "flex", fontSize: 21, color: "#6b6b76", letterSpacing: 1 }}>
-          One shortcut, any Mac app · Free and open source · macOS 13+
+          Marks it up, sets it clean · Free and open source · macOS 13+
         </div>
       </div>
     ),

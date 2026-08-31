@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/banner.png" alt="Pencil Mark — fix your writing where you wrote it" width="820">
+<img src="docs/banner.png" alt="Pencil Mark — a copy-editor for every app you type in" width="820">
 
 <br>
 
@@ -17,12 +17,16 @@
 
 ---
 
-Select text in **any** Mac app, press `⌘⇧R`, and it is replaced with a cleaner version. No
+**Pencil Mark is a copy-editor that lives in your Mac's menu bar.**
+
+Select any text, press `⌘⇧R`, and it is marked up and set clean where it already sits. No
 copy-paste, no chat window, no switching apps.
 
 It reads your selection through the macOS Accessibility API, so it is not built for any one app.
 Slack, Chrome, Safari, Gmail, Notion, VS Code, Linear, Jira, Notes, Mail — if you can select the
-text, you can rewrite it.
+text, Pencil Mark can mark it up.
+
+*Named for what an editor leaves in the margin: a light mark, a better line.*
 
 | Shortcut | Action | What it does |
 |---|---|---|
@@ -106,8 +110,8 @@ The notarization step is already written into
 adding `APPLE_ID`, `APPLE_TEAM_ID`, `APPLE_APP_PASSWORD`, `APPLE_CERT_P12` and
 `APPLE_CERT_PASSWORD` as repository secrets switches it on with no code change.
 
-The app is open source precisely so you do not have to take an unsigned binary on trust — read it,
-or build it yourself in one command.
+Pencil Mark is open source precisely so you do not have to take an unsigned binary on trust —
+read it, or build it yourself in one command.
 
 ## Known limitations
 
@@ -123,7 +127,7 @@ or build it yourself in one command.
 <details>
 <summary>The mark, in characters</summary>
 
-Generated from the same drawing routine as the app icon by
+A pencil and a brush crossed, generated from the same drawing routine as the app icon by
 [`tools/make-icon.swift`](tools/make-icon.swift), so it can never drift from it. It also prints
 when you run `make app`, and in the browser console on the website.
 

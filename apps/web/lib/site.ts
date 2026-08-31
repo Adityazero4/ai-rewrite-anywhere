@@ -7,8 +7,16 @@ export const SITE_URL =
   "https://pencilmark.vercel.app";
 
 export const NAME = "Pencil Mark";
+
+/** The category the product claims. Everything else on the page supports this one sentence. */
+export const CATEGORY = "A copy-editor for every app you type in";
+
 export const TAGLINE =
-  "Select text in any Mac app, press a shortcut, and it is replaced with a cleaner version.";
+  "Select any text, press a shortcut, and Pencil Mark marks it up and sets it clean.";
+
+/** Why the product is called what it is. Naming the metaphor makes the brand stick. */
+export const NAME_NOTE =
+  "Named for what an editor leaves in the margin: a light mark, a better line.";
 
 export const MODES = [
   {
@@ -45,7 +53,7 @@ export const FAQ = [
   },
   {
     q: "Is it free?",
-    a: "The app is free and open source under the MIT license. You bring your own OpenAI API key and pay OpenAI directly for what you use, which for everyday rewriting is a few cents a month on the default model.",
+    a: "Pencil Mark is free and open source under the MIT license. You bring your own OpenAI API key and pay OpenAI directly for what you use, which for everyday rewriting is a few cents a month on the default model.",
   },
   {
     q: "Where does my text go?",
@@ -53,7 +61,7 @@ export const FAQ = [
   },
   {
     q: "Why does macOS say the app cannot be checked for malware?",
-    a: "Because this build is not yet notarized by Apple, which needs a paid Apple Developer account. The app is open source, so you can read every line or build it yourself. To open it the first time, right-click the app and choose Open, or go to System Settings, then Privacy and Security, and click Open Anyway. You only do this once.",
+    a: "Because Pencil Mark is not yet notarized by Apple, which needs a paid Apple Developer account. The app is open source, so you can read every line or build it yourself. To open it the first time, right-click the app and choose Open, or go to System Settings, then Privacy and Security, and click Open Anyway. You only do this once.",
   },
   {
     q: "Why does it need Accessibility permission?",

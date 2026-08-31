@@ -1,6 +1,6 @@
 # Website
 
-The landing page for [PencilMark](../../README.md), live at
+The website for [Pencil Mark](../../README.md), live at
 **[pencilmark.vercel.app](https://pencilmark.vercel.app)**.
 
 Next.js App Router, Tailwind, statically rendered. The only client-side JavaScript is the hero

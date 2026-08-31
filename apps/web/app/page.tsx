@@ -1,6 +1,6 @@
 import { ColophonMark } from "@/components/ColophonMark";
 import { RewriteDemo } from "@/components/RewriteDemo";
-import { APPS, DOWNLOAD, FAQ, GITHUB, MODES, NAME } from "@/lib/site";
+import { APPS, DOWNLOAD, FAQ, GITHUB, MODES, NAME, NAME_NOTE } from "@/lib/site";
 
 /*
   Layout: a proof sheet on a desk. One narrow column of prose with a ruled left margin, the way
@@ -41,7 +41,7 @@ function Masthead() {
     <header className="flex items-baseline justify-between gap-6 py-6">
       <span className="flex items-baseline gap-3">
         <span className="font-serif text-xl">{NAME}</span>
-        <span className="folio hidden sm:inline">Proof · rev. 1.0</span>
+        <span className="folio hidden sm:inline">Copy-editor for macOS</span>
       </span>
       <nav className="flex items-center gap-4 font-mono text-[0.7rem] uppercase tracking-[0.12em] sm:gap-6">
         <a href="#install" className="text-muted transition-colors hover:text-ink">
@@ -71,10 +71,10 @@ function Hero() {
             Hanging the red rule off the first line makes the headline read as a corrected line
             rather than a slogan — the page states its thesis in its own visual language.
           */}
-          <h1 className="editorial max-w-[16ch] text-[3rem] sm:text-[4.75rem]">
-            Fix your writing{" "}
+          <h1 className="editorial max-w-[19ch] text-[3rem] sm:text-[4.5rem]">
+            A copy-editor for every app you{" "}
             <span className="relative whitespace-nowrap">
-              <span className="italic">in place</span>
+              <span className="italic">type in</span>
               <svg
                 className="absolute -bottom-1 left-0 w-full"
                 height="7"
@@ -94,9 +94,9 @@ function Hero() {
             .
           </h1>
 
-          <p className="mt-8 max-w-[52ch] text-[1.0625rem] leading-[1.7] text-muted">
-            Select text in any Mac app, press <Chord>⌘⇧R</Chord>, and it is replaced with a cleaner
-            version — in Slack, in a pull request, in an email you are already halfway through. No
+          <p className="mt-8 max-w-[54ch] text-[1.0625rem] leading-[1.7] text-muted">
+            Select any text, press <Chord>⌘⇧R</Chord>, and {NAME} marks it up and sets it clean —
+            in Slack, in a pull request, in an email you are already halfway through. No
             copy-paste, no chat window, no switching apps.
           </p>
 
@@ -129,7 +129,7 @@ function Hero() {
 
 function Modes() {
   return (
-    <Spread folio="Fol. 2" eyebrow="Four marks" title="One keystroke, four ways to correct">
+    <Spread folio="Fol. 2" eyebrow="Four marks" title="One keystroke, four kinds of mark">
       <dl className="divide-y divide-rule border-y border-rule">
         {MODES.map((mode) => (
           <div key={mode.name} className="grid gap-2 py-5 sm:grid-cols-[10rem_1fr] sm:gap-8">
@@ -167,8 +167,8 @@ function Everywhere() {
   return (
     <Spread folio="Fol. 3" eyebrow="Any manuscript" title="Works wherever you already type">
       <p className="max-w-[56ch] text-[1rem] leading-[1.75] text-muted">
-        It reads your selection through the macOS Accessibility API, so it is not built for any one
-        app. If you can select the text, you can correct it.
+        {NAME} reads your selection through the macOS Accessibility API, so it is not built for
+        any one app. If you can select the text, it can mark it up.
       </p>
       {/* Set as a run-on list, the way a colophon lists its sources. */}
       <p className="mt-7 max-w-[60ch] font-mono text-[0.8rem] leading-[2.1] text-muted">
@@ -308,8 +308,9 @@ function Colophon() {
       <span className="flex items-end gap-5">
         {/* The printer's device, set in characters. */}
         <ColophonMark />
-        <span className="pb-1">
-          {NAME} · set in Instrument Serif &amp; IBM Plex · MIT
+        <span className="flex max-w-[42ch] flex-col gap-1.5 pb-1">
+          <span className="not-italic">{NAME_NOTE}</span>
+          <span>{NAME} · set in Instrument Serif &amp; IBM Plex · MIT</span>
         </span>
       </span>
       <span className="flex gap-6">

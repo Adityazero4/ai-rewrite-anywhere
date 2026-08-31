@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans, Instrument_Serif } from "next/font/google";
 import { ConsoleMark } from "@/components/ConsoleMark";
-import { FAQ, NAME, SITE_URL } from "@/lib/site";
+import { CATEGORY, FAQ, NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 /*
@@ -32,11 +32,11 @@ const marks = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${NAME} — AI writing assistant for macOS that works in every app`,
+    default: `${NAME} — ${CATEGORY}`,
     template: `%s · ${NAME}`,
   },
   description:
-    "Select text in any Mac app and press ⌘⇧R to rewrite it, fix grammar, make it concise, or make it professional. A free, open-source menu-bar app. Your OpenAI key, your Mac, nothing stored.",
+    "Pencil Mark is a free macOS menu-bar app that copy-edits your writing in place. Select text in any app, press ⌘⇧R, and it is rewritten — or fix grammar, make it concise, make it professional. Your OpenAI key, your Mac, nothing stored.",
   keywords: [
     "AI writing assistant for Mac",
     "rewrite text macOS shortcut",
@@ -55,15 +55,15 @@ export const metadata: Metadata = {
     type: "website",
     url: SITE_URL,
     siteName: NAME,
-    title: `${NAME} — rewrite any text, in any Mac app`,
+    title: `${NAME} — ${CATEGORY}`,
     description:
-      "Select text anywhere on your Mac, press a shortcut, and it is replaced with a cleaner version. Free and open source.",
+      "Select any text on your Mac, press a shortcut, and Pencil Mark marks it up and sets it clean. Free and open source.",
   },
   twitter: {
     card: "summary_large_image",
-    title: `${NAME} — rewrite any text, in any Mac app`,
+    title: `${NAME} — ${CATEGORY}`,
     description:
-      "Select text anywhere on your Mac, press a shortcut, and it is replaced with a cleaner version.",
+      "Select any text on your Mac, press a shortcut, and Pencil Mark marks it up and sets it clean.",
   },
   category: "technology",
 };
@@ -89,9 +89,9 @@ const structuredData = {
       offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
       author: { "@type": "Person", name: "Aditya Jain", url: "https://github.com/Adityazero4" },
       description:
-        "A macOS menu-bar app that rewrites the text you have selected in any application, in place, using a global keyboard shortcut.",
+        "Pencil Mark is a macOS menu-bar app that copy-edits the text you have selected in any application, in place, using a global keyboard shortcut.",
       featureList: [
-        "Rewrite selected text in any macOS app",
+        "Copy-edit selected text in place in any macOS app",
         "Fix grammar, make concise, or make professional",
         "Configurable global keyboard shortcuts",
         "Translates non-English text into English",
