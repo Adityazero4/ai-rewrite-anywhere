@@ -1,6 +1,6 @@
 import Carbon.HIToolbox
 import Foundation
-@testable import AIRewriteCore
+@testable import PencilMarkCore
 
 private let cmd = UInt32(cmdKey)
 private let shift = UInt32(shiftKey)

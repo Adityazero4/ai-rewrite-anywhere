@@ -1,4 +1,4 @@
-# AIRewriteAnywhere
+# PencilMark
 
 A menu-bar app that rewrites whatever text you have selected — in any macOS app — with one
 keystroke. Select text, press `⌘⇧R`, and the selection is replaced in place by an improved
@@ -42,7 +42,7 @@ It also pins down four things that matter for this kind of text:
 - No greetings, sign-offs or commentary get added, and the result is never wrapped in quotes.
 
 Each mode then adds its own one-line task — see `styleContext` and `task` in
-[`RewriteMode.swift`](Sources/AIRewriteCore/Models/RewriteMode.swift). Fix Grammar is deliberately a
+[`RewriteMode.swift`](Sources/PencilMarkCore/Models/RewriteMode.swift). Fix Grammar is deliberately a
 proofread rather than a rewrite: it keeps the original wording wherever it is already correct.
 
 ## Knowing a rewrite is running
@@ -65,7 +65,7 @@ Requires macOS 13+ and the Xcode Command Line Tools (`xcode-select --install`). 
 
 ```bash
 make test      # run the test suite
-make app       # build build/AIRewriteAnywhere.app
+make app       # build build/PencilMark.app
 make run       # build and launch
 make install   # copy to /Applications (recommended — see permissions below)
 ```
@@ -83,7 +83,7 @@ put the rewritten text back. Without it the shortcuts do nothing.
 
 On first launch the app asks for it and opens its Settings window. To grant it manually:
 
-> System Settings → Privacy & Security → Accessibility → enable **AIRewriteAnywhere**
+> System Settings → Privacy & Security → Accessibility → enable **PencilMark**
 
 The Settings window has an **Open System Settings** button that jumps straight there, and shows
 live permission status.
@@ -96,7 +96,7 @@ No other permissions are needed — no screen recording, no input monitoring, no
 *and* its signature, so a copy in `build/` and a copy in `/Applications` are two different apps to
 it — and `make app` deletes and recreates `build/`. `make run` therefore installs to
 `/Applications` first and always launches that copy. Grant permission to
-`/Applications/AIRewriteAnywhere.app` and nothing else.
+`/Applications/PencilMark.app` and nothing else.
 
 **After enabling the toggle, the app must be restarted.** macOS answers `AXIsProcessTrusted()`
 from a per-process cache, so an app that was already running when you flipped the switch keeps
@@ -118,7 +118,7 @@ make app SIGN_ID=-                         # force ad-hoc
 With a real identity the requirement is identity-based and stable:
 
 ```
-designated => identifier "com.aditya.airewriteanywhere" and anchor apple generic
+designated => identifier "com.aditya.pencilmark" and anchor apple generic
               and certificate leaf[subject.CN] = "Apple Development: …"
 ```
 
@@ -127,7 +127,7 @@ grant**, and the System Settings toggle keeps showing as enabled while recording
 signature — which looks exactly like a bug. Clear the stale entry and start over:
 
 ```bash
-tccutil reset Accessibility com.aditya.airewriteanywhere
+tccutil reset Accessibility com.aditya.pencilmark
 make run   # relaunches; grant when prompted
 ```
 
@@ -187,14 +187,14 @@ own, no event tap, and no third-party dependency.
 ### Layout
 
 ```
-Sources/AIRewriteCore/          library — all logic, unit tested
+Sources/PencilMarkCore/          library — all logic, unit tested
   Models/       RewriteMode · AppSettings · RewriteError
   Services/     OpenAIClient · TextSelectionService · TextReplacementService
                 HotKeyManager · Keychain · Pasteboard · Keyboard · RewriteCoordinator
-Sources/AIRewriteAnywhere/      executable — SwiftUI shell
+Sources/PencilMark/      executable — SwiftUI shell
   App/          App · AppDelegate
   UI/           MenuBarView · SettingsView · SettingsWindowController
-Tests/AIRewriteCoreTests/       the suite (see below)
+Tests/PencilMarkCoreTests/       the suite (see below)
 ```
 
 Logic sits in a library target so the executable stays a thin shell and everything meaningful is
@@ -240,7 +240,7 @@ paste-failure paths — plus the coordinator's busy guard and loading-indicator 
 
 The suite is a plain executable rather than an `XCTest` bundle: `XCTest.framework` ships only with
 full Xcode, and SwiftPM cannot load swift-testing bundles with just the Command Line Tools
-installed. `Tests/AIRewriteCoreTests/TestRunner.swift` is a ~60-line assertion harness.
+installed. `Tests/PencilMarkCoreTests/TestRunner.swift` is a ~60-line assertion harness.
 
 ### Manual test checklist
 

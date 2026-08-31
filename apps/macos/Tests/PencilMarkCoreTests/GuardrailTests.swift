@@ -1,5 +1,5 @@
 import Foundation
-@testable import AIRewriteCore
+@testable import PencilMarkCore
 
 func runGuardrailTests() async {
     t.suite("Guardrails — the prompt keeps the model on task")

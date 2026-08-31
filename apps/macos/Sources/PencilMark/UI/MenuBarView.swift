@@ -1,4 +1,4 @@
-import AIRewriteCore
+import PencilMarkCore
 import SwiftUI
 
 struct MenuBarView: View {
@@ -29,7 +29,7 @@ struct MenuBarView: View {
 
         Divider()
 
-        Button("Quit AIRewriteAnywhere") { NSApplication.shared.terminate(nil) }
+        Button("Quit Pencil Mark") { NSApplication.shared.terminate(nil) }
             .keyboardShortcut("q", modifiers: .command)
     }
 }

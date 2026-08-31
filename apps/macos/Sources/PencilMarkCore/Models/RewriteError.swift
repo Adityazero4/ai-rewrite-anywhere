@@ -18,7 +18,7 @@ public enum RewriteError: LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .accessibilityDenied:
-            return "AIRewriteAnywhere needs Accessibility permission to read and replace selected text. Open Settings from the menu bar icon to grant it."
+            return "Pencil Mark needs Accessibility permission to read and replace selected text. Open Settings from the menu bar icon to grant it."
         case .missingAPIKey:
             return "No OpenAI API key set. Add one in Settings from the menu bar icon."
         case .noSelection:

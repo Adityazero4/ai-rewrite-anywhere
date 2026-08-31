@@ -1,4 +1,4 @@
-import AIRewriteCore
+import PencilMarkCore
 import AppKit
 import Combine
 import SwiftUI

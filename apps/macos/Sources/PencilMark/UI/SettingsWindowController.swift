@@ -1,4 +1,4 @@
-import AIRewriteCore
+import PencilMarkCore
 import AppKit
 import SwiftUI
 
@@ -15,7 +15,7 @@ final class SettingsWindowController {
             backing: .buffered,
             defer: false
         )
-        window.title = "AIRewriteAnywhere Settings"
+        window.title = "Pencil Mark Settings"
         window.contentView = NSHostingView(rootView: SettingsView(settings: settings))
         window.isReleasedWhenClosed = false
         window.center()

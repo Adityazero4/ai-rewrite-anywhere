@@ -1,6 +1,6 @@
 import Foundation
 
-// Run with `make test` (or `swift run AIRewriteCoreTests`).
+// Run with `make test` (or `swift run PencilMarkCoreTests`).
 runRewriteModeTests()
 runShortcutTests()
 await runOpenAIClientTests()

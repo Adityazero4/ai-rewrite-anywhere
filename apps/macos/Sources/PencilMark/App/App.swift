@@ -1,8 +1,8 @@
-import AIRewriteCore
+import PencilMarkCore
 import SwiftUI
 
 @main
-struct AIRewriteAnywhereApp: App {
+struct PencilMarkApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
 
     var body: some Scene {

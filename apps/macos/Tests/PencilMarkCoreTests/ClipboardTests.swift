@@ -1,5 +1,5 @@
 import Foundation
-@testable import AIRewriteCore
+@testable import PencilMarkCore
 
 /// The clipboard is the user's, not ours. These pin the contract that we always give it back.
 func runClipboardTests() async {

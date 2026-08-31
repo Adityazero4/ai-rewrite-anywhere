@@ -1,5 +1,5 @@
 import Foundation
-@testable import AIRewriteCore
+@testable import PencilMarkCore
 
 private func makeClient(transport: HTTPTransport,
                         key: String? = "sk-test",

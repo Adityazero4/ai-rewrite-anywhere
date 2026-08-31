@@ -1,10 +1,10 @@
 import Foundation
-@testable import AIRewriteCore
+@testable import PencilMarkCore
 
 /// A ~60 line assertion harness.
 ///
 /// XCTest.framework ships only with Xcode, and SwiftPM can't load swift-testing bundles with just
-/// the Command Line Tools installed, so the suite is a plain executable: `swift run AIRewriteCoreTests`.
+/// the Command Line Tools installed, so the suite is a plain executable: `swift run PencilMarkCoreTests`.
 final class TestReporter: @unchecked Sendable {
     private let lock = NSLock()
     private var suiteName = ""

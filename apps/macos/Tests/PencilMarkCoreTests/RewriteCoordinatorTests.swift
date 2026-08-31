@@ -1,5 +1,5 @@
 import Foundation
-@testable import AIRewriteCore
+@testable import PencilMarkCore
 
 @MainActor
 func runRewriteCoordinatorTests() async {

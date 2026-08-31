@@ -1,16 +1,16 @@
 <div align="center">
 
-<img src="docs/banner.png" alt="AIRewriteAnywhere — fix your writing where you wrote it" width="820">
+<img src="docs/banner.png" alt="Pencil Mark — fix your writing where you wrote it" width="820">
 
 <br>
 
-[![Release](https://img.shields.io/github/v/release/Adityazero4/ai-rewrite-anywhere?color=2f6fed&label=download)](https://github.com/Adityazero4/ai-rewrite-anywhere/releases/latest)
-[![CI](https://github.com/Adityazero4/ai-rewrite-anywhere/actions/workflows/ci.yml/badge.svg)](https://github.com/Adityazero4/ai-rewrite-anywhere/actions/workflows/ci.yml)
-[![Platform](https://img.shields.io/badge/macOS-13%2B-0e1116)](https://github.com/Adityazero4/ai-rewrite-anywhere/releases/latest)
+[![Release](https://img.shields.io/github/v/release/Adityazero4/pencilmark?color=2f6fed&label=download)](https://github.com/Adityazero4/pencilmark/releases/latest)
+[![CI](https://github.com/Adityazero4/pencilmark/actions/workflows/ci.yml/badge.svg)](https://github.com/Adityazero4/pencilmark/actions/workflows/ci.yml)
+[![Platform](https://img.shields.io/badge/macOS-13%2B-0e1116)](https://github.com/Adityazero4/pencilmark/releases/latest)
 [![License](https://img.shields.io/badge/license-MIT-0e1116)](LICENSE)
 
-**[Download](https://github.com/Adityazero4/ai-rewrite-anywhere/releases/latest/download/AIRewriteAnywhere.zip)** ·
-**[Website](https://ai-rewrite-anywhere.vercel.app)** ·
+**[Download](https://github.com/Adityazero4/pencilmark/releases/latest/download/PencilMark.zip)** ·
+**[Website](https://pencilmark.vercel.app)** ·
 **[App docs](apps/macos/README.md)**
 
 </div>
@@ -36,7 +36,7 @@ All four are configurable, and non-English text is translated into English — t
 
 ## Install
 
-Download the [latest release](https://github.com/Adityazero4/ai-rewrite-anywhere/releases/latest),
+Download the [latest release](https://github.com/Adityazero4/pencilmark/releases/latest),
 unzip, and move the app to `/Applications`. Then:
 
 1. **Open it once by right-clicking → Open.** Builds are not notarized yet, so macOS will say it
@@ -48,8 +48,8 @@ unzip, and move the app to `/Applications`. Then:
 Or build it yourself — only the Xcode Command Line Tools are needed, not full Xcode:
 
 ```bash
-git clone https://github.com/Adityazero4/ai-rewrite-anywhere.git
-cd ai-rewrite-anywhere/apps/macos
+git clone https://github.com/Adityazero4/pencilmark.git
+cd pencilmark/apps/macos
 make install     # builds, signs, and copies to /Applications
 ```
 
@@ -65,8 +65,8 @@ make install     # builds, signs, and copies to /Applications
 ## The website
 
 <div align="center">
-<img src="docs/site-light.png" alt="The AIRewriteAnywhere landing page in light mode" width="49%">
-<img src="docs/site-dark.png" alt="The AIRewriteAnywhere landing page in dark mode" width="49%">
+<img src="docs/site-light.png" alt="The Pencil Mark landing page in light mode" width="49%">
+<img src="docs/site-dark.png" alt="The Pencil Mark landing page in dark mode" width="49%">
 </div>
 
 ## Repository layout
@@ -134,21 +134,23 @@ when you run `make app`, and in the browser console on the website.
 
 
 
-                          @%
-                         @@@#
-                        #@@@@+
-                       +@@@@@@:
-                      -@@  @@@@.
-                     :@@:. -@@@@.    .:-=**
-             +*##****@@+++++*@@@@*+++==-:
-                    @@#------@@@@#
-                   @@#++++++++%@@@+
-                  #@*          @@@@-
-                 *@@            @@@@:
-               .%@@#            @@@@@+:
-              =+++++++        +++**##%%#
-              :-:.....::--=+**#%%%##****#*
-              -=++**+++==--:.
+
+
+                       .-.    .-:
+                    .-====-  -++++=:
+                   ==========++++++++
+                    =======++++++++=
+                     -===+++++++++-
+                      :=+++++++++:
+                      :+++++++++=:
+                     -+++++++++===-
+                    =++++++++=======
+                  *@#++++++=======+#@*
+                 *%@@@@#++-  -=+#@@@@%*=
+                 %%#%%@@@=    -@@@%%#%%%.
+                 %%%%%#*.      :%#%%%%%%#
+                .%%*-.          .+%%%%%%*
+                 .                 =#*:
 ```
 
 </details>

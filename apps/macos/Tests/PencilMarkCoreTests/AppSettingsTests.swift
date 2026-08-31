@@ -1,10 +1,10 @@
 import Foundation
-@testable import AIRewriteCore
+@testable import PencilMarkCore
 
 func runAppSettingsTests() {
     t.suite("Settings persistence")
 
-    let suiteName = "AIRewriteAnywhereTests-\(UUID().uuidString)"
+    let suiteName = "PencilMarkTests-\(UUID().uuidString)"
     let defaults = UserDefaults(suiteName: suiteName)!
     defer { defaults.removePersistentDomain(forName: suiteName) }
 

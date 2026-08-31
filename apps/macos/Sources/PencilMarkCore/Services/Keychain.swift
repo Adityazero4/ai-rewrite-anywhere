@@ -3,7 +3,7 @@ import Security
 
 /// Minimal generic-password wrapper. The API key never touches UserDefaults or disk in plaintext.
 public enum Keychain {
-    public static let service = "com.aditya.airewriteanywhere"
+    public static let service = "com.aditya.pencilmark"
 
     private static func query(_ account: String) -> [String: Any] {
         [

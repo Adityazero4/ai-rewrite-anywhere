@@ -1,4 +1,4 @@
-import AIRewriteCore
+import PencilMarkCore
 import AppKit
 import SwiftUI
 
@@ -47,7 +47,7 @@ struct SettingsView: View {
                     .fontWeight(.medium)
             }
 
-            Text("AIRewriteAnywhere needs Accessibility permission to read the text you have selected in other apps and to put the rewritten text back. Without it the shortcuts do nothing.")
+            Text("Pencil Mark needs Accessibility permission to read the text you have selected in other apps and to put the rewritten text back. Without it the shortcuts do nothing.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -57,7 +57,7 @@ struct SettingsView: View {
                     Button("Open System Settings") { NSWorkspace.shared.open(accessibilityURL) }
                     Button("Request Permission") { TextSelectionService.requestAccessibilityPermission() }
                 }
-                Text("Enable AIRewriteAnywhere under Privacy & Security → Accessibility, then return here.")
+                Text("Enable Pencil Mark under Privacy & Security → Accessibility, then return here.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
@@ -162,7 +162,7 @@ struct SettingsView: View {
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
 
-            Text("These work in any app. If an app already uses one of these combos, AIRewriteAnywhere wins while it is running.")
+            Text("These work in any app. If an app already uses one of these combos, PencilMark wins while it is running.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)

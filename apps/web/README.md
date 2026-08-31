@@ -1,7 +1,7 @@
 # Website
 
-The landing page for [AIRewriteAnywhere](../../README.md), live at
-**[ai-rewrite-anywhere.vercel.app](https://ai-rewrite-anywhere.vercel.app)**.
+The landing page for [PencilMark](../../README.md), live at
+**[pencilmark.vercel.app](https://pencilmark.vercel.app)**.
 
 Next.js App Router, Tailwind, statically rendered. The only client-side JavaScript is the hero
 demo; everything else is HTML by the time it reaches the browser.

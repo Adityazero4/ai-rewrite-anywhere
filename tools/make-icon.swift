@@ -1,6 +1,6 @@
 #!/usr/bin/env swift
 //
-//  Draws the AIRewriteAnywhere mark and rasterises every size the app and the website need.
+//  Draws the PencilMark mark and rasterises every size the app and the website need.
 //  Run from the repo root:  swift tools/make-icon.swift
 //
 //  There is no Xcode and no design tooling on this machine, so the mark is drawn in Core Graphics.
@@ -24,9 +24,9 @@ private let paper = NSColor(srgbRed: 0.988, green: 0.988, blue: 0.980, alpha: 1)
 
 /// Everything is expressed in a 1024×1024 design space and scaled, so one routine serves all sizes.
 ///
-/// The mark is a proof correction: a serif letterform struck by the red pencil, with the blue
-/// pencil's correction stroke beneath it. No sparkles — a sparkle is the one thing every AI
-/// product's icon has, and this app is a copy-editor, not a magic wand.
+/// Pencil Mark's mark: a pencil and a brush crossed, each laying down its own stroke. The pencil
+/// is the blue correction, the brush the red strike — the same two hands the website uses to mark
+/// up a proof. Crossed tools read as a single silhouette at 16px, which a detailed scene would not.
 private func drawMark(in size: CGFloat, tile: Bool) {
     let s = size / 1024.0
     func p(_ value: CGFloat) -> CGFloat { value * s }
@@ -37,53 +37,75 @@ private func drawMark(in size: CGFloat, tile: Bool) {
         let inset = p(72)
         let rect = NSRect(x: inset, y: inset, width: size - inset * 2, height: size - inset * 2)
         let tilePath = NSBezierPath(roundedRect: rect, xRadius: p(196), yRadius: p(196))
-
         paper.setFill()
         tilePath.fill()
-
-        // A hairline keeps the pale tile from dissolving into a light menu bar.
         NSColor.black.withAlphaComponent(0.12).setStroke()
         tilePath.lineWidth = p(6)
         tilePath.stroke()
     }
 
-    // MARK: The letterform. Drawn as real type so it carries the serif of the website.
-    let glyph: NSString = "A"
-    let pointSize = p(660)
-    let font = NSFont(name: "Times New Roman", size: pointSize)
-        ?? NSFont(name: "Georgia", size: pointSize)
-        ?? NSFont.systemFont(ofSize: pointSize)
+    /// Draws an implement along an axis: a shaft, a collar, and a tapered working end.
+    /// `lean` is the angle in degrees; everything else is measured along that axis.
+    func implement(lean: CGFloat,
+                   bodyColour: NSColor,
+                   tipColour: NSColor,
+                   width: CGFloat,
+                   bodyLength: CGFloat,
+                   tipLength: CGFloat,
+                   squareTip: Bool) {
+        NSGraphicsContext.saveGraphicsState()
 
-    let attributes: [NSAttributedString.Key: Any] = [
-        .font: font,
-        .foregroundColor: tile ? ink : ink,
-    ]
-    let measured = glyph.size(withAttributes: attributes)
-    glyph.draw(at: NSPoint(x: size / 2 - measured.width / 2,
-                           y: size / 2 - measured.height / 2 + p(62)),
-               withAttributes: attributes)
+        let transform = NSAffineTransform()
+        transform.translateX(by: size / 2, yBy: size / 2)
+        transform.rotate(byDegrees: lean)
+        transform.concat()
 
-    // MARK: Red pencil — the strike through what is being corrected.
-    let strike = NSBezierPath()
-    strike.move(to: CGPoint(x: p(252), y: size / 2 + p(46)))
-    strike.curve(to: CGPoint(x: size - p(252), y: size / 2 + p(88)),
-                 controlPoint1: CGPoint(x: size * 0.42, y: size / 2 + p(96)),
-                 controlPoint2: CGPoint(x: size * 0.62, y: size / 2 + p(30)))
-    accentDeep.setStroke()
-    strike.lineWidth = p(34)
-    strike.lineCapStyle = .round
-    strike.stroke()
+        let half = width / 2
+        let bodyBottom = -bodyLength / 2
 
-    // MARK: Blue pencil — the correction stroke that says "this is now right".
-    let correction = NSBezierPath()
-    correction.move(to: CGPoint(x: p(272), y: p(292)))
-    correction.curve(to: CGPoint(x: size - p(272), y: p(314)),
-                     controlPoint1: CGPoint(x: size * 0.40, y: p(258)),
-                     controlPoint2: CGPoint(x: size * 0.64, y: p(344)))
-    accent.setStroke()
-    correction.lineWidth = p(38)
-    correction.lineCapStyle = .round
-    correction.stroke()
+        // Shaft.
+        let shaft = NSBezierPath(roundedRect: NSRect(x: -half, y: bodyBottom,
+                                                     width: width, height: bodyLength),
+                                 xRadius: p(20), yRadius: p(20))
+        bodyColour.setFill()
+        shaft.fill()
+
+        // Collar: the ferrule on a brush, the painted band on a pencil.
+        let collar = NSBezierPath(rect: NSRect(x: -half, y: bodyBottom + bodyLength - p(30),
+                                                width: width, height: p(58)))
+        ink.withAlphaComponent(0.85).setFill()
+        collar.fill()
+
+        // Working end.
+        let tipBase = bodyBottom + bodyLength + p(28)
+        let tip = NSBezierPath()
+        if squareTip {
+            // A brush splays rather than points.
+            tip.move(to: CGPoint(x: -half * 1.18, y: tipBase))
+            tip.line(to: CGPoint(x: half * 1.18, y: tipBase))
+            tip.line(to: CGPoint(x: half * 0.72, y: tipBase + tipLength))
+            tip.line(to: CGPoint(x: -half * 0.72, y: tipBase + tipLength))
+        } else {
+            // A pencil comes to a point.
+            tip.move(to: CGPoint(x: -half, y: tipBase))
+            tip.line(to: CGPoint(x: half, y: tipBase))
+            tip.line(to: CGPoint(x: 0, y: tipBase + tipLength))
+        }
+        tip.close()
+        tipColour.setFill()
+        tip.fill()
+
+        NSGraphicsContext.restoreGraphicsState()
+    }
+
+    // Brush leans one way in red, pencil the other in blue. Pencil drawn second so it reads on top.
+    implement(lean: 214, bodyColour: accentDeep.blended(withFraction: 0.35, of: paper) ?? accentDeep,
+              tipColour: accentDeep, width: p(150), bodyLength: p(430), tipLength: p(120),
+              squareTip: true)
+
+    implement(lean: 146, bodyColour: accent.blended(withFraction: 0.30, of: paper) ?? accent,
+              tipColour: accent, width: p(150), bodyLength: p(430), tipLength: p(132),
+              squareTip: false)
 }
 
 // MARK: - Rasterising

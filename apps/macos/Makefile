@@ -1,7 +1,7 @@
-# AIRewriteAnywhere — build without Xcode (Command Line Tools are enough).
+# PencilMark — build without Xcode (Command Line Tools are enough).
 
-BUNDLE_ID  := com.aditya.airewriteanywhere
-APP_NAME   := AIRewriteAnywhere
+BUNDLE_ID  := com.aditya.pencilmark
+APP_NAME   := PencilMark
 
 # macOS ties the Accessibility grant to the code signature. An ad-hoc signature changes on every
 # rebuild, so the permission silently stops applying and has to be re-granted each time. Sign with
@@ -30,10 +30,10 @@ all: app
 
 ## Run the test suite (a plain executable: XCTest ships only with Xcode).
 test:
-	@swift run AIRewriteCoreTests
+	@swift run PencilMarkCoreTests
 
 ## Compile the executable. `--product` keeps the test runner (which needs a debug,
-## testing-enabled build of AIRewriteCore) out of the release build.
+## testing-enabled build of PencilMarkCore) out of the release build.
 build:
 	@swift build -c $(CONFIG) $(ARCH_FLAGS) --product $(APP_NAME)
 

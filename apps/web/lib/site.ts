@@ -1,12 +1,12 @@
-export const GITHUB = "https://github.com/Adityazero4/ai-rewrite-anywhere";
-export const DOWNLOAD = `${GITHUB}/releases/latest/download/AIRewriteAnywhere.zip`;
+export const GITHUB = "https://github.com/Adityazero4/pencilmark";
+export const DOWNLOAD = `${GITHUB}/releases/latest/download/PencilMark.zip`;
 
 /** Every canonical URL comes from here, so pointing a custom domain at the site is one variable. */
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
-  "https://ai-rewrite-anywhere.vercel.app";
+  "https://pencilmark.vercel.app";
 
-export const NAME = "AIRewriteAnywhere";
+export const NAME = "Pencil Mark";
 export const TAGLINE =
   "Select text in any Mac app, press a shortcut, and it is replaced with a cleaner version.";
 

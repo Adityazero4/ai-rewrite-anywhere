@@ -1,5 +1,5 @@
 import Foundation
-@testable import AIRewriteCore
+@testable import PencilMarkCore
 
 func runRewriteModeTests() {
     t.suite("Rewrite modes and prompt generation")
