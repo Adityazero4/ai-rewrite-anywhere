@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/banner.png" alt="Pencil Mark — a copy-editor for every app you type in" width="820">
+<img src="docs/pencilmark-banner.png" alt="Pencil Mark — a copy-editor for every app you type in" width="820">
 
 <br>
 
@@ -92,8 +92,8 @@ Built around the same idea as the app: a proof sheet, marked up in red and blue 
 **[pencilmark.vercel.app](https://pencilmark.vercel.app)**.
 
 <div align="center">
-<img src="docs/site-light.png" alt="The Pencil Mark website in light mode" width="49%">
-<img src="docs/site-dark.png" alt="The Pencil Mark website in dark mode" width="49%">
+<img src="docs/pencilmark-light.png" alt="The Pencil Mark website in light mode" width="49%">
+<img src="docs/pencilmark-dark.png" alt="The Pencil Mark website in dark mode" width="49%">
 </div>
 
 ## Repository layout
@@ -102,7 +102,7 @@ Built around the same idea as the app: a proof sheet, marked up in red and blue 
 apps/macos/   Swift package — the app itself, plus 204 tests
 apps/web/     Next.js website
 tools/        make-icon.swift — regenerates the icon, favicons and ASCII mark
-docs/         images used by this README
+docs/         images used by this README (rename on change: GitHub caches by URL)
 ```
 
 Two independent projects in one repo. They share no build tooling, so there is no workspace
